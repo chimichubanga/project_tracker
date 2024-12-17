@@ -1,9 +1,21 @@
 import 'package:flutter/material.dart';
 
+class Task {
+  final String title;
+  final String description;
+
+  Task({required this.title, required this.description});
+}
+
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
 
   static final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final List<Task> tasks = [
+    Task(title: "Задача #1", description: "Описание #1"),
+    Task(title: "Задача #2", description: "Описание #2"),
+    Task(title: "Задача #3", description: "Описание #3"),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -58,27 +70,37 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('Добро пожаловать в Project Tracker!'),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-
-                ],
+              const Text('Добро пожаловать в Project Tracker!',
+                style: TextStyle(fontSize: 30),
               ),
               ListView(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: const [
-                    ListTile(
-                      leading: Icon(Icons.star),
-                      title: Text("Задача #1"),
-                      subtitle: Text("Описание #1"),
-                    )
-                  ]
-              )
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                children: tasks.map((task) {
+                  return ListTile(
+                    leading: const Icon(Icons.star),
+                    title: Text(task.title),
+                    subtitle: Text(task.description),
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar
+                            (content: Text("Вы выбрали ${task.title}"),
+                            action: SnackBarAction(
+                                label: "Закрыть",
+                                onPressed: (){
+                                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                }
+                            ),
+                            duration: const Duration(seconds: 3)
+                          ),
+                      );
+                    },
+                  );
+                }).toList(),
+              ),
             ],
           ),
-        )
+        ),
       ),
     );
   }
