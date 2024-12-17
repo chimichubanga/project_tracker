@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_tracker/src/screens/project_screen.dart';
 
 class Task {
   final String title;
@@ -97,30 +98,49 @@ class HomeScreen extends StatelessWidget {
               const Text('Добро пожаловать в Project Tracker!',
                 style: TextStyle(fontSize: 30),
               ),
-              ListView(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                children: tasks.map((task) {
-                  return ListTile(
-                    leading: const Icon(Icons.star),
-                    title: Text(task.title),
-                    subtitle: Text(task.description),
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar
-                            (content: Text("Вы выбрали ${task.title}"),
+              Expanded(
+                child: ListView(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: tasks.map((task) {
+                    return ListTile(
+                      leading: const Icon(Icons.star),
+                      title: Text(task.title),
+                      subtitle: Text(task.description),
+                      onTap: () {
+                        // Показать SnackBar
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Вы выбрали ${task.title}"),
                             action: SnackBarAction(
                                 label: "Закрыть",
-                                onPressed: (){
+                                onPressed: () {
                                   ScaffoldMessenger.of(context).hideCurrentSnackBar();
                                 }
                             ),
-                            duration: const Duration(seconds: 3)
+                            duration: const Duration(seconds: 1),
                           ),
-                      );
-                    },
-                  );
-                }).toList(),
+                        );
+
+                        // Переход на экран ProjectScreen после небольшой задержки
+                        Future.delayed(const Duration(seconds: 0), () {
+                          // Check if the widget is still mounted
+                          if (context.mounted) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ProjectScreen(
+                                  projectName: task.title,
+                                  projectDescription: task.description,
+                                ),
+                              ),
+                            );
+                          }
+                        });
+                      },
+                    );
+                  }).toList(),
+                ),
               ),
             ],
           ),
