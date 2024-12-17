@@ -12,9 +12,9 @@ class HomeScreen extends StatelessWidget {
 
   static final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final List<Task> tasks = [
-    Task(title: "Задача #1", description: "Описание #1"),
-    Task(title: "Задача #2", description: "Описание #2"),
-    Task(title: "Задача #3", description: "Описание #3"),
+    Task(title: "Проект #1", description: "Описание #1"),
+    Task(title: "Проект #2", description: "Описание #2"),
+    Task(title: "Проект #3", description: "Описание #3"),
   ];
 
   @override
@@ -47,9 +47,18 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundImage: AssetImage('assets/images/profile_pic.jpeg'),
+                  ),
+                  SizedBox(height: 10),
                   Text(
-                    'Welcome to Project Tracker!',
-                    style: TextStyle(color: Colors.white, fontSize: 24),
+                    'Милан Иванченко',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  Text(
+                    'Добро пожаловать!',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                 ],
               ),
@@ -58,9 +67,24 @@ class HomeScreen extends StatelessWidget {
               leading: const Icon(Icons.home),
               title: const Text("Главный экран"),
               onTap: () {
-
+                _scaffoldKey.currentState?.closeDrawer();
               },
             ),
+            ListTile(
+              leading: const Icon(Icons.list),
+              title: const Text("Проекты"),
+              onTap: () {
+                _scaffoldKey.currentState?.closeDrawer();
+              },
+            ),
+            const Divider(),
+            ListTile(
+                leading: const Icon(Icons.info),
+                title: const Text("Настройки"),
+                onTap: () {
+
+                }
+            )
           ],
         ),
       ),
