@@ -1,22 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:project_tracker/src/screens/project_screen.dart';
-
-class Task {
-  final String title;
-  final String description;
-
-  Task({required this.title, required this.description});
-}
 
 class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
+  final VoidCallback toggleTheme;
+  final ThemeMode themeMode;
+
+  const HomeScreen({super.key, required this.toggleTheme, required this.themeMode});
 
   static final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final List<Task> tasks = [
-    Task(title: "Проект #1", description: "Описание #1"),
-    Task(title: "Проект #2", description: "Описание #2"),
-    Task(title: "Проект #3", description: "Описание #3"),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -33,117 +23,138 @@ class HomeScreen extends StatelessWidget {
             },
           ),
         ),
-        actions: const [
-
+        actions: [
+          IconButton(
+            icon: Icon(
+              themeMode == ThemeMode.light
+                  ? Icons.nightlight_round
+                  : Icons.wb_sunny,
+            ),
+            onPressed: toggleTheme,
+          ),
         ],
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: const EdgeInsets.all(0),
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    radius: 20,
+        drawer: Drawer(
+          child: Container(
+            color: Theme.of(context).colorScheme.surface,
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                UserAccountsDrawerHeader(
+                  accountName: Text(
+                    'Милан Иванченко',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  accountEmail: Text(
+                    '123@email.com',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  currentAccountPicture: const CircleAvatar(
                     backgroundImage: AssetImage('assets/images/profile_pic.jpeg'),
                   ),
-                  SizedBox(height: 10),
-                  Text(
-                    'Милан Иванченко',
-                    style: TextStyle(color: Colors.white),
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.blue, Colors.blueAccent],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
                   ),
-                  Text(
-                    'Добро пожаловать!',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+                ListTile(
+                  leading: Icon(Icons.home, color: Theme.of(context).iconTheme.color),
+                  title: Text(
+                    'Главный экран',
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
-                ],
-              ),
+                  onTap: () {
+                    _scaffoldKey.currentState?.closeDrawer();
+                    // Логика перехода
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.list, color: Theme.of(context).iconTheme.color),
+                  title: Text(
+                    'Проекты',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  onTap: () {
+                    _scaffoldKey.currentState?.closeDrawer();
+                    // Логика перехода
+                  },
+                ),
+                const Divider(),
+                ListTile(
+                  leading: Icon(Icons.settings, color: Theme.of(context).iconTheme.color),
+                  title: Text(
+                    'Настройки',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  onTap: () {
+                    _scaffoldKey.currentState?.closeDrawer();
+                    // Логика перехода
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.exit_to_app, color: Theme.of(context).iconTheme.color),
+                  title: Text(
+                    'Выход',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  onTap: () {
+                    // Логика выхода
+                  },
+                ),
+              ],
             ),
-            ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text("Главный экран"),
-              onTap: () {
-                _scaffoldKey.currentState?.closeDrawer();
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.list),
-              title: const Text("Проекты"),
-              onTap: () {
-                _scaffoldKey.currentState?.closeDrawer();
-              },
-            ),
-            const Divider(),
-            ListTile(
-                leading: const Icon(Icons.info),
-                title: const Text("Настройки"),
-                onTap: () {
-
-                }
-            )
-          ],
+          ),
         ),
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(60.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('Добро пожаловать в Project Tracker!',
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Align(
+              alignment: Alignment.center,
+              child: Text(
+                'Добро пожаловать в Project Tracker!',
                 style: TextStyle(fontSize: 30),
+                textAlign: TextAlign.center,
               ),
-              Expanded(
-                child: ListView(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: tasks.map((task) {
-                    return ListTile(
-                      leading: const Icon(Icons.star),
-                      title: Text(task.title),
-                      subtitle: Text(task.description),
-                      onTap: () {
-                        // Показать SnackBar
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Вы выбрали ${task.title}"),
-                            action: SnackBarAction(
-                                label: "Закрыть",
-                                onPressed: () {
-                                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                                }
-                            ),
-                            duration: const Duration(seconds: 1),
-                          ),
-                        );
+            ),
+            const SizedBox(height: 40),
 
-                        // Переход на экран ProjectScreen после небольшой задержки
-                        Future.delayed(const Duration(seconds: 0), () {
-                          // Check if the widget is still mounted
-                          if (context.mounted) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ProjectScreen(
-                                  projectName: task.title,
-                                  projectDescription: task.description,
-                                ),
-                              ),
-                            );
-                          }
-                        });
-                      },
-                    );
-                  }).toList(),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
-            ],
-          ),
+              onPressed: () {
+
+              },
+              child: const Text(
+                'Создать проект',
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              onPressed: () {
+
+              },
+              child: const Text(
+                'Присоединиться к проекту',
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+          ],
         ),
       ),
     );
